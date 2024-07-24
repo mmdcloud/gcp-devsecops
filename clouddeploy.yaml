@@ -1,0 +1,25 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+  name: nestjs-app
+description: Nest.js App Deployment Pipeline
+serialPipeline:
+  stages:
+    - targetId: staging
+    - targetId: production
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: staging
+description: Staging Environment
+gke:
+  cluster: projects/custom-ground-424107-q4/locations/us-central1/clusters/staging
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: production
+description: Production Environment
+gke:
+  cluster: projects/custom-ground-424107-q4/locations/us-central1/clusters/production

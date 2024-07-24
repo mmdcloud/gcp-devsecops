@@ -1,0 +1,41 @@
+steps:
+  # Build the image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/custom-ground-424107-q4/nestjs-app/nestjs-app:$SHORT_SHA",
+        ".",
+      ]
+
+  # Push the container image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "us-central1-docker.pkg.dev/custom-ground-424107-q4/nestjs-app/nestjs-app:$SHORT_SHA",
+      ]
+
+  # Create release in Google Cloud Deploy
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      [
+        "deploy",
+        "releases",
+        "create",
+        "release-$BUILD_ID",
+        "--delivery-pipeline",
+        "nestjs-app",
+        "--region",
+        "us-central1",
+        "--annotations",
+        "release-version=1",
+        "--source",
+        "./",
+        "--images",
+        "nestjs-app=us-central1-docker.pkg.dev/custom-ground-424107-q4/nestjs-app/nestjs-app:$SHORT_SHA",
+      ]
+options:
+  logging: CLOUD_LOGGING_ONLY
