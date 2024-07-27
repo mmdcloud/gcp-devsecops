@@ -11,6 +11,7 @@ resource "google_container_cluster" "staging" {
   name             = "staging"
   location         = var.region
   enable_autopilot = true
+  deletion_protection = false
 }
 
 # Production GKE Cluster
@@ -18,6 +19,7 @@ resource "google_container_cluster" "production" {
   name             = "production"
   location         = var.region
   enable_autopilot = true
+  deletion_protection = false
 }
 
 # Cloud Build configuration
@@ -25,18 +27,18 @@ resource "google_cloudbuild_trigger" "nestjs-app-trigger" {
   name = "nestjs-app-trigger"
   trigger_template {
     branch_name = "master"
-    repo_name   = "mmdcloud-nestjs-app-gke"
+    repo_name   = "nestjs-app-gke"
   }
-  github {
-    owner = "mmdcloud"
-    name  = "mmdcloud-nestjs-app-gke"
-    push {
-      branch = "master"
-    }
-  }
+#  github {
+#    owner = "mmdcloud"
+#    name  = "nestjs-app-gke"
+#    push {
+#      branch = "master"
+#    }
+#  }
   ignored_files   = [".gitignore"]
-  service_account = "custom-ground-424107-q4@appspot.gserviceaccount.com"
-  filename        = "${path.module}/../cloudbuild.yaml"
+ # service_account = "custom-ground-424107-q4@appspot.gserviceaccount.com"
+  filename        = "cloudbuild.yaml"
 }
 
 # Cloud Deploy Delivery Pipeline
