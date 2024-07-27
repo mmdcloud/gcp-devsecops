@@ -23,6 +23,10 @@ resource "google_container_cluster" "production" {
 # Cloud Build configuration
 resource "google_cloudbuild_trigger" "nestjs-app-trigger" {
   name = "nestjs-app-trigger"
+  trigger_template {
+    branch_name = "master"
+    repo_name   = "mmdcloud-nestjs-app-gke"
+  }
   github {
     owner = "mmdcloud"
     name  = "mmdcloud-nestjs-app-gke"
@@ -30,8 +34,9 @@ resource "google_cloudbuild_trigger" "nestjs-app-trigger" {
       branch = "master"
     }
   }
-  ignored_files = [".gitignore"]
-  filename      = "cloudbuild.yaml"
+  ignored_files   = [".gitignore"]
+  service_account = "custom-ground-424107-q4@appspot.gserviceaccount.com"
+  filename        = "${path.module}/../cloudbuild.yaml"
 }
 
 # Cloud Deploy Delivery Pipeline
